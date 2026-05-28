@@ -7,6 +7,31 @@
     <script type="module" src="/src/popup/index.ts"></script>
   </head>
   <body>
-    <main id="app">Twitter Following Exporter</main>
+    <main class="popup">
+      <h1>Twitter Following Expoter</h1>
+
+      <section class="summary" aria-label="采集状态">
+        <div>
+          <span class="label">当前页面：</span>
+          <span id="page-label">检测中</span>
+        </div>
+        <div>
+          <span class="label">状态：</span>
+          <span id="status-label">未开始</span>
+        </div>
+        <div>
+          <span class="label">已采集：</span>
+          <span id="count-label">0 / 1000</span>
+        </div>
+      </section>
+
+      <section class="actions" aria-label="操作">
+        <button id="start-button" type="button">开始采集</button>
+        <button id="stop-button" type="button" disabled>停止采集</button>
+        <button id="export-button" type="button" disabled>导出 CSV</button>
+      </section>
+
+      <p id="message" class="message" role="status"></p>
+    </main>
   </body>
 </html>
