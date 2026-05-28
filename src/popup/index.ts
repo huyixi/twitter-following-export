@@ -30,13 +30,13 @@ async function init() {
   pageInfo = parseFollowingUrl(tab?.url ?? "");
   render();
 
-  if (activeTabId !== null && pageInfo.isFollowingPage) {
-    await sendContentMessage({ type: "GET_STATE" });
-  }
-
   startButton.addEventListener("click", () => sendContentMessage({ type: "START_COLLECTION" }));
   stopButton.addEventListener("click", () => sendContentMessage({ type: "STOP_COLLECTION" }));
   exportButton.addEventListener("click", exportCsv);
+
+  if (activeTabId !== null && pageInfo.isFollowingPage) {
+    await sendContentMessage({ type: "GET_STATE" });
+  }
 }
 
 async function sendContentMessage(message: ContentMessage) {
@@ -45,7 +45,14 @@ async function sendContentMessage(message: ContentMessage) {
     return;
   }
 
-  const response = await chrome.tabs.sendMessage(activeTabId, message) as ContentResponse;
+  let response: ContentResponse;
+  try {
+    response = await chrome.tabs.sendMessage(activeTabId, message) as ContentResponse;
+  } catch {
+    messageLabel.textContent = "页面未就绪，请刷新 x.com 的 following 页面后重试";
+    return;
+  }
+
   if (!response.ok) {
     messageLabel.textContent = response.error;
     return;
