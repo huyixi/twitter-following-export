@@ -8,10 +8,20 @@ interface DownloadOptionsInput {
   now?: Date;
 }
 
+function toBase64(str: string): string {
+  const bytes = new TextEncoder().encode(str);
+  const chunks: string[] = [];
+  const chunkSize = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    chunks.push(String.fromCharCode(...bytes.subarray(i, i + chunkSize)));
+  }
+  return btoa(chunks.join(""));
+}
+
 export function createDownloadOptions(input: DownloadOptionsInput): chrome.downloads.DownloadOptions {
   const csv = serializeUsersToCsv(input.users);
   return {
-    url: `data:text/csv;charset=utf-8,${encodeURIComponent(csv)}`,
+    url: `data:text/csv;charset=utf-8;base64,${toBase64(csv)}`,
     filename: buildCsvFilename(input.sourceUsername, input.now ?? new Date()),
     saveAs: true,
     conflictAction: "uniquify"

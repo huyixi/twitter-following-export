@@ -11,7 +11,10 @@ describe("createDownloadOptions", () => {
 
     expect(options.filename).toBe("twitter-following-naval-2026-05-29.csv");
     expect(options.saveAs).toBe(true);
-    expect(decodeURIComponent(options.url)).toContain("username,display_name,profile_url");
-    expect(decodeURIComponent(options.url)).toContain("paulg,Paul Graham,https://x.com/paulg");
+
+    const base64 = options.url.split(";base64,")[1];
+    const csv = atob(base64);
+    expect(csv).toContain("username,display_name,profile_url");
+    expect(csv).toContain("paulg,Paul Graham,https://x.com/paulg");
   });
 });

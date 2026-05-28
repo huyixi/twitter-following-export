@@ -65,6 +65,20 @@ async function sendContentMessage(message: ContentMessage) {
 }
 
 async function exportCsv() {
+  // Refresh snapshot from content script before exporting to avoid stale data
+  if (activeTabId !== null && pageInfo.isFollowingPage) {
+    try {
+      const response = await chrome.tabs.sendMessage(activeTabId, { type: "GET_STATE" }) as ContentResponse;
+      if (response.ok) {
+        snapshot = response.snapshot;
+        pageInfo = response.pageInfo;
+        render();
+      }
+    } catch {
+      // If refresh fails, fall through and use existing snapshot
+    }
+  }
+
   if (snapshot.users.length === 0) {
     messageLabel.textContent = NO_DATA_EXPORT_LABEL;
     return;
