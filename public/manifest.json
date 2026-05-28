@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Twitter Following Exporter",
+  "version": "0.1.0",
+  "description": "Export the currently loaded following list from a public Twitter/X profile to CSV.",
+  "action": {
+    "default_title": "Twitter Following Exporter",
+    "default_popup": "popup.html"
+  },
+  "permissions": ["activeTab", "downloads"],
+  "host_permissions": ["https://x.com/*", "https://twitter.com/*"],
+  "background": {
+    "service_worker": "assets/background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://x.com/*/following*", "https://twitter.com/*/following*"],
+      "js": ["assets/content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
